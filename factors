@@ -1,25 +1,35 @@
 #!/usr/bin/python3
 
-def prime_factors(n):
-    factors = []
-    # Handle the case of small prime numbers
-    while n % 2 == 0:
-        factors.append(2)
-        n = n // 2
+import sys
 
-# Try dividing n by all odd numbers starting from 3
-        for i in range(3, int(n**0.5) + 1, 2):
-            while n % i == 0:
-                factors.append(i)
-                n = n // i
+def factorize(number):
+    for i in range(2, number):
+        if number % i == 0:
+            return (i, number // i)
+    return None
 
-# If n is still greater than 1, it must be a prime number itself
-                if n > 1:
-                    factors.append(n)
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: {} <file>".format(sys.argv[0]))
+        sys.exit(1)
 
-                    return factors
+    input_file = sys.argv[1]
 
-# Example usage:
-                number_to_factor = 56
-                factors = prime_factors(number_to_factor)
-                print("Prime factors of", number_to_factor, "are:", factors)
+    try:
+        with open(input_file, 'r') as file:
+            for line in file:
+                number = int(line.strip())
+                factors = factorize(number)
+                if factors:
+                    print("{}={}*{}".format(number, factors[0], factors[1]))
+                else:
+                    print("{} is a prime number".format(number))
+    except FileNotFoundError:
+        print("File not found: {}".format(input_file))
+        sys.exit(1)
+    except ValueError:
+        print("Invalid number in file: {}".format(input_file))
+        sys.exit(1)
+
+if __name__ == "__main__":
+ main()
